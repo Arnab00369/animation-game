@@ -2,14 +2,97 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Snake Game</title>
-  <link rel="stylesheet" href="style.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GitHub Snake Contribution Animation</title>
+  <style>
+    body {
+      margin: 0;
+      background-color: #0d1117;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    canvas {
+      background-color: #0d1117;
+      display: block;
+    }
+  </style>
 </head>
 <body>
-  <h1>🐍 Classic Snake Game</h1>
-  <canvas id="gameCanvas" width="400" height="400"></canvas>
-  <p>Use arrow keys to move the snake!</p>
-  <script src="script.js"></script>
+  <canvas id="snakeCanvas" width="1092" height="150"></canvas>
+  <script>
+    const canvas = document.getElementById('snakeCanvas');
+    const ctx = canvas.getContext('2d');
+
+    const COLS = 52;
+    const ROWS = 7;
+    const SIZE = 20;
+    const PADDING = 2;
+    const WIDTH = COLS * (SIZE + PADDING);
+    const HEIGHT = ROWS * (SIZE + PADDING);
+
+    const colors = ["#0d1117", "#9be9a8", "#40c463", "#30a14e", "#216e39"];
+
+    // Simulated GitHub contribution data
+    let grid = Array.from({ length: ROWS }, () =>
+      Array.from({ length: COLS }, () => Math.floor(Math.random() * 5))
+    );
+
+    // Snake path (center row)
+    let snakePath = [];
+    for (let c = 0; c < COLS; c++) {
+      snakePath.push({ x: c, y: 3 });
+    }
+
+    let snakeIndex = 0;
+    const snakeLength = 6;
+
+    function drawGrid() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      for (let y = 0; y < ROWS; y++) {
+        for (let x = 0; x < COLS; x++) {
+          let value = grid[y][x];
+          ctx.fillStyle = colors[value];
+          ctx.fillRect(
+            x * (SIZE + PADDING),
+            y * (SIZE + PADDING),
+            SIZE,
+            SIZE
+          );
+        }
+      }
+    }
+
+    function drawSnake() {
+      ctx.fillStyle = '#db61a2';
+      for (let i = 0; i < snakeLength; i++) {
+        let index = snakeIndex - i;
+        if (index >= 0) {
+          const { x, y } = snakePath[index];
+          ctx.fillRect(
+            x * (SIZE + PADDING),
+            y * (SIZE + PADDING),
+            SIZE,
+            SIZE
+          );
+        }
+      }
+
+      snakeIndex++;
+      if (snakeIndex >= snakePath.length + snakeLength) {
+        snakeIndex = 0;
+      }
+    }
+
+    function animate() {
+      drawGrid();
+      drawSnake();
+      requestAnimationFrame(animate);
+    }
+
+    animate();
+  </script>
 </body>
 </html>
